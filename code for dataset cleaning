@@ -1,1 +1,25 @@
-
+import pandas as pd
+df=pd.read_csv('Netflix_movies_and_tv_shows_clustering.csv')
+df.isnull().sum()
+df['director'].fillna('Unknown')
+df['cast'] = df['cast'].fillna('Not Available')
+mode_country = df['country'].mode()[0]
+df['country'] = df['country'].fillna(mode_country)
+mode_date = df['date_added'].mode()[0]
+df['date_added'] = df['date_added'].fillna(mode_date)
+mode_rating = df['rating'].mode()[0]
+df['rating'] = df['rating'].fillna(mode_rating)
+df['date_added'] = pd.to_datetime(df['date_added'], errors='coerce')
+df.to_csv('cleaned_netflix_data.csv', index=False)
+print("\n Data cleaned successfully and saved as 'cleaned_netflix_data.csv'")
+df['type'] = df['type'].str.title().str.strip()
+df['country'] = df['country'].str.title().str.strip()
+df['rating'] = df['rating'].str.upper().str.strip()
+df['date_added'] = pd.to_datetime(df['date_added'], errors='coerce')
+df = df.rename(columns=lambda x: x.strip().lower().replace(' ', '_'))
+df['release_year'] = df['release_year'].astype(int)
+print("\n Missing values after cleaning:\n", df.isnull().sum())
+print("\n Duplicates after cleaning:", df.duplicated().sum())
+print("\n Data types:\n", df.dtypes)
+df.to_csv("cleaned_netflix_dataset.csv", index=False)
+print("\n Cleaned dataset saved as 'cleaned_netflix_dataset.csv'")
